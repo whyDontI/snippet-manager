@@ -1,0 +1,66 @@
+@import '../../colors.scss';
+
+.form-container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  h1 {
+    color: $accent-color;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: $primary-color;
+
+    .title {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      border: 1px solid $secondary-bg;
+      background-color: $secondary-bg;
+      color: $secondary-color;
+      border-radius: 4px;
+      resize: vertical;
+
+      &::placeholder {
+        color: $secondary-color;
+      }
+    }
+
+    .error {
+      border-color: red;
+    }
+
+    .errorText {
+      color: red;
+      font-size: 0.9rem;
+    }
+  }
+
+  button {
+    background-color: $accent-color;
+    color: $primary-color;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 auto;
+    width: 100%;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

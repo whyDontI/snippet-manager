@@ -1,0 +1,76 @@
+@import '../../colors.scss';
+
+.snippet {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  padding: 0.5rem;
+
+  .textContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      gap: 0.5rem;
+
+      span {
+        background-color: $accent-color;
+        color: #fff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 1rem;
+        height: fit-content;
+      }
+    }
+
+    .description {
+      color: $tertiary-text;
+      font-size: 0.875rem;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    button {
+      background-color: $primary-color;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      margin-left: 0.625rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+
+      &:hover {
+        background-color: darken($primary-color, 15%);
+      }
+
+      &:first-child {
+        background-color: $success-color;
+        margin-right: 0.625rem;
+
+        &:hover {
+          background-color: darken($success-color, 15%);
+        }
+      }
+
+      &:last-child {
+        background-color: $danger-color;
+
+        &:hover {
+          background-color: darken($danger-color, 15%);
+        }
+      }
+    }
+  }
+}

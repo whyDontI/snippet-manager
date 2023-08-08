@@ -1,0 +1,42 @@
+@import '../../colors.scss';
+
+.container {
+  padding: 1.5rem;
+}
+
+h1 {
+  color: $accent-color;
+  font-size: 1.5rem;
+}
+
+.snippetContainer {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .addNewSnippet {
+    font-weight: bold;
+    color: $accent-color;
+    cursor: pointer;
+  }
+}
+
+.addButton {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 2rem;
+  background-color: $accent-color;
+  color: $primary-color;
+  width: 4rem;
+  height: 4rem;
+  cursor: pointer;
+  font-size: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+}

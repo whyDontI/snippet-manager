@@ -1,0 +1,20 @@
+@import '../../colors.scss';
+
+.searchBar {
+  background-color: $secondary-bg;
+  color: $secondary-color;
+  border: 1px solid $secondary-bg;
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: 50%;
+
+  &::placeholder {
+    color: $secondary-color;
+  }
+
+  // Optionally, add some responsive styles
+  @media screen and (max-width: 480px) {
+    width: 100%;
+  }
+}
+
