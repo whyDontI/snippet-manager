@@ -3,6 +3,7 @@
 Start the app in the `dev` environment:
 
 ```bash
+npm i
 npm start
 ```
 
