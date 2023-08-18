@@ -4,7 +4,7 @@ import AceEditor from 'react-ace';
 
 import styles from './EditForm.module.scss'; // Import the SCSS module
 import CodeSnippetType from '../../Interfaces/codeSnippet';
-import { getItemById } from '../../Service/database';
+import { getSnippetById } from '../../Service/database';
 
 import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -31,14 +31,17 @@ export default function CodeSnippetForm({
 
   const onSubmit: SubmitHandler<CodeSnippetType> = (data: CodeSnippetType) => {
     if (!data.language) data.language = 'JS';
+    delete data.id;
     onUpdate(snippetId, data);
   };
 
   useEffect(() => {
-    // Get data
-    const dataToEdit = getItemById(snippetId);
-    reset(dataToEdit);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    (async () => {
+      // Get data
+      const dataToEdit = await getSnippetById(snippetId);
+      reset(dataToEdit);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    })();
   }, [snippetId]);
 
   return (

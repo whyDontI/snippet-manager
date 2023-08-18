@@ -1,5 +1,4 @@
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
 import AceEditor from 'react-ace';
 import styles from '../EditForm/EditForm.module.scss'; // Import the SCSS module
 import CodeSnippetType from '../../Interfaces/codeSnippet';
@@ -9,7 +8,7 @@ import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
 interface AddCodeSnippetFormProps {
-  onAdd: (id: string, data: CodeSnippetType) => void;
+  onAdd: (data: CodeSnippetType) => void;
 }
 
 export default function AddCodeSnippetForm({ onAdd }: AddCodeSnippetFormProps) {
@@ -24,7 +23,7 @@ export default function AddCodeSnippetForm({ onAdd }: AddCodeSnippetFormProps) {
 
   const onSubmit: SubmitHandler<CodeSnippetType> = (data: CodeSnippetType) => {
     if (!data.language) data.language = 'JS';
-    onAdd(uuidv4(), data);
+    onAdd(data);
   };
 
   return (

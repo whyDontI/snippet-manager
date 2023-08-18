@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 
-import { retrieveValue, storeValue } from '../../Service/localStorage';
-import { updateItemById, deleteItemById } from '../../Service/database';
+import {
+  addSnippet,
+  getSnippets,
+  updateSnippetById,
+  deleteSnippetById,
+} from '../../Service/database';
 import styles from './Home.module.scss';
 
 // Interfaces
-import DataBaseType from '../../Interfaces/database';
 import CodeSnippetType from '../../Interfaces/codeSnippet';
 
 // Components
@@ -16,97 +19,102 @@ import Modal from '../Modal';
 import EditForm from '../EditForm';
 import AddForm from '../AddForm';
 
-const DATABASE_NAME = 'SnippetVault';
-
-const INITIAL_DATA: DataBaseType = {};
-
 export default function Home() {
   const [searchText, setSearchText] = useState('');
   const [valueChangedFlag, setValueChangedFlag] = useState(false);
-  const [filteredList, setFilteredList] = useState(INITIAL_DATA);
+
+  const [snippets, setSnippets] = useState<Array<CodeSnippetType>>([]);
+  const [filteredList, setFilteredList] = useState<Array<CodeSnippetType>>([]);
 
   const [editId, setEditId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  const filter = useCallback(() => {
-    const snippets = retrieveValue(DATABASE_NAME) as DataBaseType;
-    const filteredSnippets: DataBaseType = {};
+  const getInitialData = useCallback(async () => {
+    const data = await getSnippets();
+    setSnippets(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valueChangedFlag]);
 
-    Object.entries(snippets).forEach(([id, value]) => {
+  const filter = useCallback(async () => {
+    const filteredSnippets: Array<CodeSnippetType> = [];
+
+    Object.values(snippets).forEach((value: CodeSnippetType) => {
       const { title, description } = value;
       if (
         title.toLowerCase().includes(searchText.toLowerCase()) ||
         description.toLowerCase().includes(searchText.toLowerCase())
       ) {
-        filteredSnippets[id] = value;
+        filteredSnippets.push(value);
       }
     });
 
     setFilteredList(filteredSnippets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, valueChangedFlag]);
+  }, [searchText, snippets, valueChangedFlag]);
 
-  const handleAddOrEdit = (snippetId: string, data: CodeSnippetType) => {
-    updateItemById(snippetId, data);
+  const handleEdit = async (snippetId: string, data: CodeSnippetType) => {
+    await updateSnippetById(snippetId, data);
     setValueChangedFlag(!valueChangedFlag);
     toast('Done!');
   };
 
-  const handleDelete = (snippetId: string) => {
+  const handleAdd = async (data: CodeSnippetType) => {
+    await addSnippet(data);
+    toast('Done!');
+    setValueChangedFlag(!valueChangedFlag);
+  };
+
+  const handleDelete = async (snippetId: string) => {
     // eslint-disable-next-line no-alert
     const resp = window.confirm('Are you sure you want to delete this snippet');
     if (resp) {
-      deleteItemById(snippetId);
-      setValueChangedFlag(!valueChangedFlag);
+      await deleteSnippetById(snippetId);
       toast('Snippet deleted!');
+      setValueChangedFlag(!valueChangedFlag);
     }
   };
 
   useEffect(() => {
-    if (!retrieveValue(DATABASE_NAME)) {
-      storeValue(DATABASE_NAME, INITIAL_DATA);
-    }
-  }, []);
-
-  useEffect(() => {
     filter();
   }, [filter]);
+
+  useEffect(() => {
+    getInitialData();
+  }, [getInitialData]);
 
   return (
     <div className={styles.container}>
       <h1>🔒 CodeVault</h1>
       {showAddModal && (
         <Modal onClose={() => setShowAddModal(false)}>
-          <AddForm onAdd={handleAddOrEdit} />
+          <AddForm onAdd={handleAdd} />
         </Modal>
       )}
       {showEditModal && (
         <Modal onClose={() => setShowEditModal(false)}>
-          <EditForm snippetId={editId} onUpdate={handleAddOrEdit} />
+          <EditForm snippetId={editId} onUpdate={handleEdit} />
         </Modal>
       )}
       <SearchBar onSearch={setSearchText} />
       <div className={styles.snippetContainer}>
-        {Object.keys(filteredList).length ? (
-          Object.entries(filteredList).map(
-            ([id, { title, description, language }]) => {
-              return (
-                <Snippet
-                  key={id}
-                  id={id}
-                  title={title}
-                  description={description}
-                  language={language}
-                  onEdit={(snippetId: string) => {
-                    setEditId(snippetId);
-                    setShowEditModal(!showEditModal);
-                  }}
-                  onDelete={handleDelete}
-                />
-              );
-            }
-          )
+        {filteredList.length ? (
+          filteredList.map(({ id, title, description, language }) => {
+            return (
+              <Snippet
+                key={id}
+                id={id}
+                title={title}
+                description={description}
+                language={language}
+                onEdit={(snippetId: string) => {
+                  setEditId(snippetId);
+                  setShowEditModal(!showEditModal);
+                }}
+                onDelete={handleDelete}
+              />
+            );
+          })
         ) : (
           <div
             className={styles.addNewSnippet}
